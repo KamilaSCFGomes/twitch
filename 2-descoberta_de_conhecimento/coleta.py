@@ -17,7 +17,7 @@ tam_pagina = 100
 num_paginas = 10
 
 # intervalo de tempo entre coletas (segundos)
-intervalo = 15*60
+intervalo = 1*60
 
 def retorna_top_streams(filtra_br=False):
     lista = []
@@ -100,7 +100,7 @@ def salva_top_streams():
                 'game_id': stream['game_id']
             })
 
-salva_top_streams()
+
 
 while True:
     salva_top_streams()
