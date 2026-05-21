@@ -17,7 +17,7 @@ tam_pagina = 100
 num_paginas = 10
 
 # intervalo de tempo entre coletas (segundos)
-intervalo = 1*60
+intervalo = 15*60
 
 def retorna_top_streams(filtra_br=False):
     lista = []
