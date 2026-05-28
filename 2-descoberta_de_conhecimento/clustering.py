@@ -33,7 +33,8 @@ colunas = [ # ignorando frequencia pq bate muito com tempo_horas
     'desvio_viewers',
     'crescimento_medio',
     'volatilidade',
-    'tempo_horas'
+    'tempo_horas',
+    'quantidade_categorias'
 ]
 
 dados = dataset[colunas]
@@ -87,6 +88,8 @@ for k in K:
 
 melhor_k = K[silhuetas.index(max(silhuetas))]
 print(f"\nMelhor K encontrado: {melhor_k}")
+melhor_k = 3
+print(f"K usado: {melhor_k}")
 
 modelo_final = KMeans( # modelo final duh
     n_clusters=melhor_k,

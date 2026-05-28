@@ -134,6 +134,11 @@ jogo = (
     .agg(lambda x: x.mode()[0])
 )
 
+quantidade_categorias = (
+    df.groupby('user_name')['game_id']
+    .nunique()
+)
+
 dataset = pd.DataFrame({ # dataset final
     'media_viewers': media_viewers,
     'pico_viewers': pico_viewers,
@@ -142,6 +147,7 @@ dataset = pd.DataFrame({ # dataset final
     'crescimento_medio': crescimento_medio,
     'volatilidade': volatilidade,
     'tempo_horas': tempo_horas,
+    'quantidade_categorias': quantidade_categorias,
     'language': idioma,
     'game_id': jogo
 })

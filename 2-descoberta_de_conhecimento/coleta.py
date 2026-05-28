@@ -8,8 +8,8 @@ url = "https://api.twitch.tv/helix/streams"
 
 # gere o seu id e autorização e cole aqui
 headers = {
-    "Client-ID": "XXXXXXXX",
-    "Authorization": "Bearer XXXXXXXX"
+    "Client-ID": "4n5o8qje7lkppbosgj2kmmjt6xmodq",
+    "Authorization": "Bearer i0p1fb7by3ls55wshcmjafbvuguiju"
 }
 
 # a API da twitch retorna as informações em páginas, escolha o tamanho e a quantidade
@@ -17,7 +17,7 @@ tam_pagina = 100
 num_paginas = 10
 
 # intervalo de tempo entre coletas (segundos)
-intervalo = 15*60
+intervalo = 14*60+55
 
 def retorna_top_streams(filtra_br=False):
     lista = []
@@ -71,7 +71,7 @@ def salva_top_streams():
     data = agora.strftime("%d-%m-%Y")
     data_hora = agora.strftime("%d/%m/%Y %H:%M:%S")
 
-    with open('dados/horarios_gravados.txt', 'a', encoding='utf-8') as file:
+    with open('twitch/2-descoberta_de_conhecimento/dados/horarios_gravados.txt', 'a', encoding='utf-8') as file:
         file.write(f"{data_hora}\n")
 
     print(data_hora)
@@ -79,7 +79,7 @@ def salva_top_streams():
     top_streams_global = retorna_top_streams()
     # top_streams_brasil = retorna_top_streams(True)
 
-    arquivo_csv = f"dados/top_streams-{data}.csv"
+    arquivo_csv = f"twitch/2-descoberta_de_conhecimento/dados/top_streams-{data}.csv"
     arquivo_existe = os.path.exists(arquivo_csv)
 
     with open(arquivo_csv, 'a', encoding='utf-8', newline='') as file:

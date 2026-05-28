@@ -46,7 +46,8 @@ colunas_numericas = [ # histogramas e bloxquesblox
     'frequencia',
     'crescimento_medio',
     'volatilidade',
-    'tempo_horas'
+    'tempo_horas',
+    'quantidade_categorias'
 ]
 
 for coluna in colunas_numericas:
@@ -208,3 +209,50 @@ plt.close()
 
 print(f"\nGráfico PCA salvo em:")
 print(caminho_pca)
+
+# grafico categorias vs viewers
+plt.figure(figsize=(10,6))
+
+plt.scatter(
+    dataset['quantidade_categorias'],
+    dataset['media_viewers']
+)
+
+plt.title("Categorias vs Média de Viewers")
+plt.xlabel("Quantidade de Categorias")
+plt.ylabel("Média de Viewers")
+
+caminho_cat_viewers = os.path.join(
+    PASTA_GRAFICOS,
+    "categorias_vs_viewers.png"
+)
+
+plt.savefig(caminho_cat_viewers)
+plt.close()
+
+print(f"\nGráfico categorias vs viewers salvo em:")
+print(caminho_cat_viewers)
+
+
+# grafico categorias vs volatilidade
+plt.figure(figsize=(10,6))
+
+plt.scatter(
+    dataset['quantidade_categorias'],
+    dataset['volatilidade']
+)
+
+plt.title("Categorias vs Volatilidade")
+plt.xlabel("Quantidade de Categorias")
+plt.ylabel("Volatilidade")
+
+caminho_cat_vol = os.path.join(
+    PASTA_GRAFICOS,
+    "categorias_vs_volatilidade.png"
+)
+
+plt.savefig(caminho_cat_vol)
+plt.close()
+
+print(f"\nGráfico categorias vs volatilidade salvo em:")
+print(caminho_cat_vol)
