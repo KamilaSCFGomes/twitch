@@ -7,6 +7,12 @@ Os dados foram extraídos utilizando a API oficial da Twitch.
 
 É necessário [gerar um ID e segredo](https://dev.twitch.tv/console/apps), [gerar token](gerar_token_twitch.py) e substituir no código para utilizar a API da Twitch.
 
+Dependências requeridas estão listadas em [requirements.txt](requirements.txt), ou podem ser baixadas usando:
+
+```bash
+pip install -r requirements.txt
+```
+
 # Caracterização topológica de Redes Sociais
 [gerar_lista_categorias.py](1-caracterizacao_topologica/gerar_lista_categorias.py) e [extrair_ultimos_videos.py](1-caracterizacao_topologica/extrair_ultimos_videos.py) coletam os dados necessários, que foram salvos na pasta [dados](1-caracterizacao_topologica/dados).
 
