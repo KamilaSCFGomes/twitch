@@ -8,8 +8,8 @@ url = "https://api.twitch.tv/helix/streams"
 
 # gere o seu id e autorização e cole aqui
 headers = {
-    "Client-ID": "4n5o8qje7lkppbosgj2kmmjt6xmodq",
-    "Authorization": "Bearer i0p1fb7by3ls55wshcmjafbvuguiju"
+    "Client-ID": "XXXXXXXXXXXXXXXXXXXXXXXXX",
+    "Authorization": "XXXXXXXXXXXXXXXXXXXXXXXXX"
 }
 
 # a API da twitch retorna as informações em páginas, escolha o tamanho e a quantidade
