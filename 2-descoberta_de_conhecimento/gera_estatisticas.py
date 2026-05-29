@@ -65,7 +65,7 @@ for coluna in colunas_numericas:
         PASTA_GRAFICOS,
         f'histograma_{coluna}.png'
     )
-
+    plt.yscale('log')
     plt.savefig(caminho_hist)
     plt.close()
 
@@ -81,7 +81,7 @@ for coluna in colunas_numericas:
         PASTA_GRAFICOS,
         f'boxplot_{coluna}.png'
     )
-
+    plt.yscale('log')
     plt.savefig(caminho_box)
     plt.close()
 
