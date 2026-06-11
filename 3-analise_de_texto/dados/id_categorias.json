@@ -1,42 +1,7 @@
 [
-  {
-    "name": "Just Chatting",
-    "id": "509658"
-  },
-  {
-    "name": "League of Legends",
-    "id": "21779"
-  },
-  {
-    "name": "Counter-Strike",
-    "id": "32399"
-  },
-  {
-    "name": "Grand Theft Auto V",
-    "id": "32982"
-  },
+
   {
     "name": "VALORANT",
     "id": "516575"
-  },
-  {
-    "name": "IRL",
-    "id": "509672"
-  },
-  {
-    "name": "Dota 2",
-    "id": "29595"
-  },
-  {
-    "name": "Fortnite",
-    "id": "33214"
-  },
-  {
-    "name": "Overwatch",
-    "id": "515025"
-  },
-  {
-    "name": "Minecraft",
-    "id": "27471"
   }
 ]
