@@ -11,9 +11,9 @@ ARQUIVO_MENSAGENS = os.path.join(PASTA_ATUAL, "dados", "chat_mensagens.csv")
 ARQUIVO_CONTAGEM = os.path.join(PASTA_ATUAL, "dados", "chat_contagem.csv")
 ARQUIVO_CATEGORIAS = os.path.join(PASTA_ATUAL, "dados", "id_categorias.json")
 
-OAUTH_TOKEN = "oauth:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+OAUTH_TOKEN = "oauth:ouueaovwyvcp3ma85eqvol033kwj84"
 # é o ACCESS TOKEN em https://twitchtokengenerator.com -> "Custom Scope Token" -> ativa "chat:read" - > "Generate Token!"
-BOT_NICK = "XXXXXX" # seu nick  da conta da twitch, usada no login pedido no link acima
+BOT_NICK = "pdrohd" # seu nick  da conta da twitch, usada no login pedido no link acima
 
 MENSAGENS_POR_STREAMER = 300
 
@@ -39,6 +39,27 @@ with open(ARQUIVO_CATEGORIAS, "r", encoding="utf-8") as f:
 
 ordem_categorias = [str(c["id"]) for c in id_categorias]
 
+inicio_streamer = input("Digite o nome do streamer para começar (ou deixe vazio para começar do início): ").strip().lower()
+# saintsakura
+if inicio_streamer:
+    lista_completa = []
+    for game_id in ordem_categorias:
+        df_cat = df_streamers[df_streamers["game_id"] == int(game_id)]
+        df_cat = df_cat.sort_values("relevancia", ascending=False)
+        for _, s in df_cat.iterrows():
+            lista_completa.append((game_id, s["user_name"]))
+
+    nomes = [nome.lower() for _, nome in lista_completa]
+    if inicio_streamer not in nomes:
+        print(f"Streamer '{inicio_streamer}' não encontrado. Começando do início.")
+        inicio_streamer = ""
+    else:
+        idx = nomes.index(inicio_streamer)
+        print(f"Começando a partir de '{inicio_streamer}' (posição {idx + 1} de {len(lista_completa)}).")
+else:
+    lista_completa = []
+
+
 def salvar_contagens():
     pd.DataFrame([
         {"user_name": k, "mensagens": v}
@@ -59,7 +80,6 @@ def conectar_irc(canal):
 
 
 def coletar_mensagens(canal, quantidade_necessaria):
-    
     mensagens = []
     try:
         sock = conectar_irc(canal)
@@ -69,36 +89,28 @@ def coletar_mensagens(canal, quantidade_necessaria):
                 if dados == "":
                     print(f"  conexão fechada por {canal}")
                     break
-
-            except socket.timeout: # sem dados
+            except socket.timeout:
                 break
-
             if "PING" in dados:
                 sock.send("PONG :tmi.twitch.tv\r\n".encode())
-
             for linha in dados.split("\r\n"):
                 if "PRIVMSG" not in linha:
                     continue
-
                 try:
                     texto = linha.split("PRIVMSG")[1].split(":", 1)[1].strip()
                     mensagens.append(texto)
-
+                    sock.settimeout(20)  # reseta o timeout a cada mensagem nova
                     if len(mensagens) >= quantidade_necessaria:
                         break
-
                 except IndexError:
                     continue
-
         sock.close()
-
     except Exception as e:
         print(f"  Erro ao conectar em {canal}: {e}")
         return None
-
     return mensagens
 
-
+pulando = bool(inicio_streamer) # True enquanto não chegou no streamer alvo
 with open(ARQUIVO_MENSAGENS, "a", newline="", encoding="utf-8") as arquivo_mensagens:
     writer = csv.writer(arquivo_mensagens, delimiter="\t")
 
@@ -110,6 +122,13 @@ with open(ARQUIVO_MENSAGENS, "a", newline="", encoding="utf-8") as arquivo_mensa
         for _, streamer in df_categoria.iterrows():
 
             user_name = streamer["user_name"]
+            if pulando:
+                if user_name.lower() == inicio_streamer:
+                    pulando = False
+                else:
+                    print(f"  {user_name}: pulado.")
+                    continue
+
             quantidade_atual = contagem_mensagens.get(user_name, 0)
             if quantidade_atual >= MENSAGENS_POR_STREAMER:
                 print(f"  {user_name}: já possui {quantidade_atual} mensagens.")
