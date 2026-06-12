@@ -7,7 +7,7 @@ PASTA_ATUAL = os.path.dirname(os.path.abspath(__file__))
 ARQUIVO_MENSAGENS = os.path.join(
     PASTA_ATUAL,
     "dados",
-    "chat_mensagens.csv"
+    "planob_chat_mensagens.csv"
 )
 MENSAGENS_LIMPO = os.path.join(
     PASTA_ATUAL,
@@ -17,7 +17,7 @@ MENSAGENS_LIMPO = os.path.join(
 LISTA_STREAMERS = os.path.join(
     PASTA_ATUAL,
     "dados",
-    "streamers_filtrado2.csv"
+    "planob_streamers.csv"
 )
 ARQUIVO_DESTINO_STREAMER = os.path.join(
     PASTA_ATUAL,
@@ -49,6 +49,7 @@ def substutuir_emojis(texto):
               r':[sS]': 'confused',
               r':3': 'cute',
               r'[xX]D': 'happy',
+              r'xdd?': 'happy',
               r'>_<': 'shy',
               r'<3': 'love',
               r'o7': 'hi'
@@ -89,6 +90,8 @@ def limpar_texto(texto):
         texto = re.sub(r'!\S+', '', texto) # remover comandos
         texto = re.sub(r'[^a-z _]', '', texto) # remover pontuacao
 
+        texto = re.sub(r'\S{20}\S*', '', texto) # remover palavras muito longas
+
         texto = texto.strip()
         texto = reduzir_repeticao(texto)
 
@@ -100,7 +103,6 @@ def tokenizar_1(texto):
     if re.search(r'\s', texto):
         texto = re.split(r'\s', texto)
         texto = [palavra for palavra in texto if palavra] # remove tokens vazios
-        texto = [palavra for palavra in texto if len(palavra) <= 20] # remove palavras gigantes
         return texto
     else:
         return [texto]
