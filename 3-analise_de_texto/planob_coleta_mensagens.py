@@ -10,10 +10,10 @@ ARQUIVO_MENSAGENS = os.path.join(PASTA_ATUAL, "dados", "planob_chat_mensagens.cs
 ARQUIVO_STREAMERS = os.path.join(PASTA_ATUAL, "dados", "planob_streamers.csv")
 ARQUIVO_CATEGORIAS = os.path.join(PASTA_ATUAL, "dados", "id_categorias.json")
 
-OAUTH_TOKEN = "oauth:6koecrhs51e3tr3lits0z2zm9hcgdh"
-CLIENT_ID = "gp762nuuoqcoxypju8c569th9wz7q5"
+OAUTH_TOKEN = "oauth:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+CLIENT_ID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 # gerar em https://twitchtokengenerator.com -> "Custom Scope Token" -> ativa "chat:read" - > "Generate Token!"
-BOT_NICK = "pdrohd" # seu nick  da conta da twitch, usada no login pedido no link acima
+BOT_NICK = "XXXXXX" # seu nick  da conta da twitch, usada no login pedido no link acima
 
 MENSAGENS_POR_STREAMER = 100
 STREAMERS_POR_CATEGORIA = 1

@@ -8,8 +8,8 @@ url = "https://api.twitch.tv/helix/games"
 
 # gere o seu id e autorização e cole aqui
 headers = {
-    "Client-ID": "hy29mbacqvuufwrxjiz2iva50449ri",
-    "Authorization": "Bearer b2tm49kwszxxh9q5afen5ton69zpxg"
+    "Client-ID": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "Authorization": "Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 }
 
 CATEGORIAS = [

@@ -11,9 +11,9 @@ ARQUIVO_MENSAGENS = os.path.join(PASTA_ATUAL, "dados", "chat_mensagens.csv")
 ARQUIVO_CONTAGEM = os.path.join(PASTA_ATUAL, "dados", "chat_contagem.csv")
 ARQUIVO_CATEGORIAS = os.path.join(PASTA_ATUAL, "dados", "id_categorias.json")
 
-OAUTH_TOKEN = "oauth:ouueaovwyvcp3ma85eqvol033kwj84"
+OAUTH_TOKEN = "oauth:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 # é o ACCESS TOKEN em https://twitchtokengenerator.com -> "Custom Scope Token" -> ativa "chat:read" - > "Generate Token!"
-BOT_NICK = "pdrohd" # seu nick  da conta da twitch, usada no login pedido no link acima
+BOT_NICK = "XXXXXX" # seu nick  da conta da twitch, usada no login pedido no link acima
 
 MENSAGENS_POR_STREAMER = 300
 
