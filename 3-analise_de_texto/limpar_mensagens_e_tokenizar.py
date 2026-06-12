@@ -50,7 +50,7 @@ def substutuir_emojis(texto):
               r':3': 'cute',
               r'[xX]D': 'happy',
               r'xdd?': 'happy',
-              r'>_<': 'shy',
+              r'>_<': 'happy',
               r'<3': 'love',
               r'o7': 'hi'
               }
