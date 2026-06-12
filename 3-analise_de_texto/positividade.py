@@ -32,15 +32,9 @@ ARQUIVO_TF_IDF = os.path.join(
     "dados",
     "TF-IDF.csv"
 )
-GRAFICO_CATEGORIA = os.path.join(
+PASTA_DADOS = os.path.join(
     PASTA_ATUAL,
-    "dados",
-    "grafico_categoria_positividade.png"
-)
-GRAFICO_STREAMER = os.path.join(
-    PASTA_ATUAL,
-    "dados",
-    "grafico_streamer_positividade.png"
+    "dados"
 )
 POSITIVIDADE = os.path.join(
     PASTA_ATUAL,
@@ -52,28 +46,6 @@ ID_CATEGORIAS = os.path.join(
     "dados",
     "id_categorias.json"
 )
-
-def tf_idf(dados):
-    dados2=dados
-    dados2.loc['Total'] = dados2.sum(numeric_only=True)
-    dados.loc['total_documentos'] = dados.count(numeric_only=True, axis=1)
-    dados.loc['total_palavras'] = dados.count(numeric_only=True)
-    
-    for linha in range(len(dados2)):
-        print(f"TD-IDF: {linha}/{len(dados2)}")
-        for col in range(1, len(dados2.columns)):
-            celula = dados2.iloc[linha, col]
-            total_l = dados2.iloc[linha, -1]
-            total_c = dados2.iloc[-1, col]
-            
-            tf = celula/total_c
-            idf = math.log(total_documentos/total_l)
-            dados2.iat[linha, col] = round(tf*idf,5)
-    
-    dados2 = dados2.rename(columns={"Unnamed: 0": "words"})
-
-    return dados2
-
 def renomear_colunas(df):
     with open(ID_CATEGORIAS, 'r', encoding='utf-8') as file:
         arquivo = json.load(file)
@@ -81,7 +53,6 @@ def renomear_colunas(df):
             for j in arquivo:
                 if j['id'] == c:
                     df = df.rename(columns={c: j['name']})
-    df = df.rename(columns={"Total": "média"})
     return df
         
 
@@ -259,11 +230,80 @@ def salvar_grafico(df, streamers=False):
     plt.tight_layout()
 
     if streamers:
-        plt.savefig(GRAFICO_STREAMER)
+        plt.savefig(os.path.join(PASTA_DADOS,"grafico_streamer_positividade.png"))
     else:
-        plt.savefig(GRAFICO_CATEGORIA)
-    plt.show()
+        plt.savefig(os.path.join(PASTA_DADOS,"grafico_categoria_positividade.png"))
 
+def salvar_grafico_desvio(df, streamers=False):
+
+    dados = df.copy().T
+
+    # Taxa de positividade líquida (%)
+    dados["positividade"] = (
+        (dados["positivas"] - dados["negativas"])
+        / dados["total"]
+        * 100
+    )
+
+    media = dados["positividade"].mean()
+    desvio = dados["positividade"].std()
+
+    sns.set_theme(style="whitegrid")
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    barras = sns.barplot(
+        x=dados.index,
+        y="positividade",
+        data=dados,
+        color="#50EFF2",
+        ax=ax
+    )
+
+    # valores sobre as barras
+    for i, valor in enumerate(dados["positividade"]):
+        ax.text(
+            i,
+            valor,
+            f"{valor:.2f}%",
+            ha="center",
+            fontsize=10
+        )
+
+    # média
+    ax.axhline(
+        media,
+        color="red",
+        linestyle="--",
+        linewidth=2,
+        label=f"Média = {media:.2f}%"
+    )
+
+    if streamers:
+        ax.set_title("Taxa de Positividade por Streamer")
+        ax.set_xlabel("Streamer")
+        plt.xticks(rotation=60, ha="right")
+    else:
+        ax.set_xlabel("Jogo")
+        ax.set_title("Taxa de Positividade por Jogo")
+        plt.xticks(rotation=20, ha="right")
+
+    ax.set_ylabel("Positividade (%)")
+    
+    plt.legend()
+    plt.tight_layout()
+
+    if streamers: arquivo_saida = os.path.join(PASTA_DADOS, "grafico_streamer_positividade_2.png")
+    else: arquivo_saida = os.path.join(PASTA_DADOS, "grafico_categoria_positividade_2.png")
+
+    plt.savefig(arquivo_saida, dpi=300, bbox_inches="tight")
+    plt.close()
+
+    print(f"Média: {media:.2f}%")
+    print(f"Desvio padrão: {desvio:.2f}%")
+    print(f"Gráfico salvo em: {arquivo_saida}")
+
+    return dados[["positividade"]]
 
 
 with open(PALAVRAS_POSITIVAS, "r", newline="", encoding="utf-8") as f:
@@ -285,6 +325,8 @@ df_positividade = positividade(df_tokens_categorias)
 df_positividade.to_csv(POSITIVIDADE, sep="\t")
 
 salvar_grafico(df_positividade)
+salvar_grafico_desvio(df_positividade)
 
 df_positividade = positividade(df_tokens_streamers)
 salvar_grafico(df_positividade, True)
+salvar_grafico_desvio(df_positividade, True)
