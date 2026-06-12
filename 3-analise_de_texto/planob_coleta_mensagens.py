@@ -94,7 +94,7 @@ def coleta_mensagens(canal, quantidade_necessaria):
                 try:
                     texto = linha.split("PRIVMSG")[1].split(":", 1)[1].strip()
                     mensagens.append(texto)
-                    sock.settimeout(45) # TEMPO DE ESPERA
+                    sock.settimeout(60) # TEMPO DE ESPERA
                     if len(mensagens) >= quantidade_necessaria:
                         break
                 except IndexError:
