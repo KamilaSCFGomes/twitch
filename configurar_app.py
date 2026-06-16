@@ -1,6 +1,6 @@
 import os
 import json
-import gerar_token_twitch as ge_to
+from gerar_token_twitch import gerar_acess_token
 
 arquivo_informacoes = os.path.join(os.getcwd(), "twitch", "informacoes_aplicativo.json")
 
@@ -26,15 +26,15 @@ def configurar():
     resposta = y_n()
 
     if not resposta:
-        print("\nAcesse  <https://dev.twitch.tv/console/apps>  e clique em  <Registre seu aplicativo>.")
+        print("\n\nAcesse  <https://dev.twitch.tv/console/apps>  e clique em  <Registre seu aplicativo>.")
         print("Para a  <URL de redirecionamento OAuth>, recomendamos utilizar  <http://localhost:3000>.")
         print("Em  <Tipo de cliente>, escolha  <Confidencial>.")
         print("Após criar o aplicativo, você será redirecionado.")
 
     else:
-        print("\nAcesse <https://dev.twitch.tv/console/apps>.")
+        print("\n\nAcesse <https://dev.twitch.tv/console/apps>.")
 
-    print("nClique no botão  <Gerenciar>  na frente do seu aplicativo.")
+    print("\nClique no botão  <Gerenciar>  na frente do seu aplicativo.")
     url_oauth = input("Informe uma  <URL de redirecionamento OAuth>:  ")
     client_id = input("Informe o  <ID do cliente>:  ")
     client_secret = input("Clique em  <Novo segredo>  para gerar um segredo de cliente e informe:  ")
@@ -47,9 +47,9 @@ def configurar():
 
     else:
         print("\nGerando token de acesso...")
-        access_token = ge_to.gerar_acess_token(client_id, client_secret)
+        access_token = gerar_acess_token(client_id, client_secret)
         print(f"Token de acesso gerado: {access_token}")
-
+    
     informacoes = {
         "url_oauth": url_oauth,
         "client_id": client_id,
@@ -57,6 +57,23 @@ def configurar():
         "access_token": access_token
     }
 
+    with open(arquivo_informacoes, "w", encoding="utf-8") as f:
+        json.dump(informacoes, f, ensure_ascii=False, indent=2)
+
+    from get_user_id import get_user_id
+    user_name = input("\nInforme seu nome de usuário:  ")
+    print("Obtendo seu ID de usuário...")
+    user_id = get_user_id(user_name)
+    print(f"Seu ID de usuário:  {user_id}")
+
+    informacoes = {
+        "url_oauth": url_oauth,
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "access_token": access_token,
+        "user_name": user_name,
+        "user_id": user_id
+    }
 
     with open(arquivo_informacoes, "w", encoding="utf-8") as f:
         json.dump(informacoes, f, ensure_ascii=False, indent=2)

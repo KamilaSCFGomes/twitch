@@ -1,18 +1,20 @@
-import ler_informacoes_aplicativo as app
+import ler_informacoes as app
 import re
 import os
 
 client_id = app.get_client_id()
 redirect_uri = app.get_url_oauth()
+scope = "user%3Aread%3Afollows+user%3Aread%3Asubscriptions"
 
-url = f"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={client_id}&redirect_uri={redirect_uri}&scope=channel%3Amanage%3Apolls+channel%3Aread%3Apolls&state=c3ab8aa609ea11e793ae92361f002671"
+url = f"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={client_id}&redirect_uri={redirect_uri}&scope={scope}&state=c3ab8aa609ea11e793ae92361f002671"
 
-arquivo_oath_token = os.path.join(os.getcwd(), "twitch", "oath_token.txt")
+arquivo_oauth_token = os.path.join(os.getcwd(), "twitch", "oauth_token.txt")
 
-def gerar_oath_token():
+def gerar_oauth_token():
     print("\n\n\nPara conectar a sua conta, abra este link:")
     print(url)
     print("\nSe não estiver logado, faça login na sua conta.")
+    print("Clique em  <Autorizar>.")
     print("Você será redirecionado a outra página. O URL contém as informações que queremos obter.")
 
     while True:
@@ -35,20 +37,14 @@ def gerar_oath_token():
             token = re.split('&', token)[0]
             print(f"\nSeu OAuth token:  {token}")
 
-            with open(arquivo_oath_token, "w", encoding="utf-8") as f:
+            with open(arquivo_oauth_token, "w", encoding="utf-8") as f:
                 print(token, file=f)
             
-            print(f"salvo em {arquivo_oath_token}.")
+            print(f"salvo em {arquivo_oauth_token}.")
 
             break
 
         else:
             print("\nOcorreu algum erro.")
-    
-def get_user_oath_token():
-    try:
-        with open(arquivo_oath_token, "r", encoding="utf-8") as f:
-            return f.readline()
-    except:
-        print("\n\nErro: não foi possível ler o OAth token do arquivo")
-        return
+
+gerar_oauth_token()
