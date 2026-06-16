@@ -3,14 +3,12 @@ import csv
 from datetime import datetime
 import os
 from time import sleep
+import ler_informacoes_aplicativo as app
+
 
 url = "https://api.twitch.tv/helix/streams"
+headers = app.get_header()
 
-# gere o seu id e autorização e cole aqui
-headers = {
-    "Client-ID": "XXXXXXXXXXXXXXXXXXXXXXXXX",
-    "Authorization": "XXXXXXXXXXXXXXXXXXXXXXXXX"
-}
 
 # a API da twitch retorna as informações em páginas, escolha o tamanho e a quantidade
 tam_pagina = 100

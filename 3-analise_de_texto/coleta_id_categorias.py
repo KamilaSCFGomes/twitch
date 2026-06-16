@@ -1,16 +1,12 @@
 import requests
 import os
 import json
+import ler_informacoes_aplicativo as app
 
 # esse programa salva o id das categorias especificadas
 
 url = "https://api.twitch.tv/helix/games"
-
-# gere o seu id e autorização e cole aqui
-headers = {
-    "Client-ID": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    "Authorization": "Bearer XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-}
+headers = app.get_header()
 
 CATEGORIAS = [
         "Just Chatting",

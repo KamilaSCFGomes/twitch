@@ -1,16 +1,13 @@
 import requests
 import json
+import ler_informacoes_aplicativo as app
 
 # lista os vods mais populares das categorias listadas e monta uma lista de streamers que realizaram streams nessas categorias
 # o código atualiza a lista a cada categoria pesquisada e confere categorias já pesquisadas, para evitar que trabalho seja perdido ao parar o código antes que termine de rodar
 
 url = "https://api.twitch.tv/helix/videos"
+headers = app.get_header()
 
-# gere o seu id e autorização e cole aqui
-headers = {
-    "Client-ID": "XXXXXXXX",
-    "Authorization": "Bearer XXXXXXXX"
-}
 
 limite_paginas_vods = 25
 indice_categoria_inicial = 0

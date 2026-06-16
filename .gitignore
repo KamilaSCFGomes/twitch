@@ -2,3 +2,7 @@
 venv/
 .venv/
 env/
+
+__pycache__/
+
+informacoes_aplicativo.json
