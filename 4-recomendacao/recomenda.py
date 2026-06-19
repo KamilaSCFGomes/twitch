@@ -13,12 +13,23 @@ import ler_informacoes as app
 from pre_processamento import limpar_texto
 PASTA_DADOS = os.path.join(os.getcwd(), "twitch", "4-recomendacao", "dados")
 arquivo_perfis = os.path.join(PASTA_DADOS, "perfis_seguidos_processado.csv")
+arquivo_categorias = os.path.join(PASTA_DADOS, "categorias.csv")
 headers = app.get_header_user_oauth()
 
+def carrega_categorias():
+    categorias = []
+    with open(arquivo_categorias, "r", encoding="utf-8") as f:
+        reader = csv.DictReader(f, delimiter="\t")
+        for row in reader:
+            categorias.append({
+                "game_id": row["game_id"],
+                "frequency": float(row["frequency"]) / 100
+            })
+    return categorias
 
-def pega_streamers_online(total=10000):
+def pega_streamers_por_categoria(game_id, total):
     url = "https://api.twitch.tv/helix/streams"
-    params = {"first": 100}
+    params = {"first": min(100, total), "game_id": game_id}
     streams = []
     while len(streams) < total:
         tentativas = 0
@@ -43,7 +54,24 @@ def pega_streamers_online(total=10000):
         if not cursor:
             break
         params["after"] = cursor
+        params["first"] = min(100, total - len(streams))
     return streams[:total]
+
+def pega_streamers_online(total=10000):
+    categorias = carrega_categorias()
+    streams = []
+
+    for cat in categorias:
+        quantidade = round(cat["frequency"] * total)
+        if quantidade <= 0:
+            continue
+        print(f"  categoria {cat['game_id']} ({cat['frequency']*100:.1f}%): buscando {quantidade} streamers...")
+        streams_cat = pega_streamers_por_categoria(cat["game_id"], quantidade)
+        print(f"    {len(streams_cat)} streamers coletados.")
+        streams.extend(streams_cat)
+
+    print(f"\nTotal coletado: {len(streams)} streamers.")
+    return streams
 
 def monta_perfil_bruto(stream):
     partes = []
@@ -110,4 +138,4 @@ for idioma in idiomas:
     print(f"\n===== RECOMENDAÇÕES — idioma: {idioma} ({len(seguidos_idioma)} seguidos) =====")
     recomendados = recomendar(seguidos_idioma, perfis_online, top_n=10)
     for i, r in enumerate(recomendados):
-        print(f"  #{i+1} {r['broadcaster_name']} (score: {r['score']})")
+        print(f"  #{i+1} {r['broadcaster_name']} (score: {r['score']})  -->  https://www.twitch.tv/{r['broadcaster_name']}")
