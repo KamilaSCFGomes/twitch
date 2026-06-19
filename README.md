@@ -50,3 +50,14 @@ Em [sentimentos.py](3-analise_de_texto/sentimentos.py), utilizamos transformers 
 [planob_coleta_mensagens.py](3-analise_de_texto/planob_coleta_mensagens.py) é a iteração de [coleta_mensagens.py](3-analise_de_texto/coleta_mensagens.py) utilizada na versão final do trabalho. A principal diferença está no salvamento de 100 mensagens por streamer, com um limite de 10 streamers por categoria, além dos novos arquivos gerados [planob_chat_mensagens.csv](3-analise_de_texto/dados/planob_chat_mensagens.csv) e [planob_streamers.csv](3-analise_de_texto/dados/planob_streamers.csv)
 
 [integra_mensagens.py](3-analise_de_texto/integra_mensagens.py) une dados de streamers coletados em [chat_mensagens.csv](3-analise_de_texto/dados/chat_mensagens.csv) a [planob_chat_mensagens.csv](3-analise_de_texto/dados/planob_chat_mensagens.csv), complementando o volume de dados.
+
+
+# Sistemas de Recomendação em Redes Sociais: Twitch
+
+[coletar_dados_usuario.py](4-recomendacao/coletar_dados_usuario.py) coleta a lista de canais seguidos pelo usuário via endpoint /helix/channels/followed, salvando o resultado em [canais_seguidos.json](4-recomendacao/dados/canais_seguidos.json).
+
+[monta_perfis.py](4-recomendacao/monta_perfis.py) percorre os canais seguidos e, para cada um, coleta até 10 VODs recentes (/helix/videos) e informações do canal (/helix/channels), extraindo título, idioma, categoria e tags. Esses dados são salvos incrementalmente em perfis_seguidos.csv, permitindo retomar a coleta em caso de interrupção.
+
+[pre_processamento.py](4-recomendacao/pre_processamento.py) realiza a limpeza textual dos perfis coletados, removendo links, datas, horários, menções, comandos da Twitch, emoticons textuais e palavras muito longas, além de normalizar para caixa baixa e reduzir repetições de caracteres. O resultado é salvo em [perfis_seguidos_processado.csv](4-recomendacao/dados/perfis_seguidos.csv).
+
+[recomenda.py](4-recomendacao/recomenda.py) busca os streamers atualmente online via /helix/streams, monta seus perfis textuais e aplica o mesmo pré-processamento. A similaridade entre os perfis seguidos e os streamers ativos é calculada utilizando TF-IDF combinado com similaridade do cosseno, considerando apenas unigramas e filtrando termos muito comuns ou muito raros. Os scores de similaridade são ponderados por um fator de confiança proporcional à quantidade de texto disponível em cada perfil, penalizando recomendações baseadas em informações insuficientes (perfis sem categoria, tags ou título relevante). As recomendações são geradas separadamente para cada idioma identificado entre os canais seguidos pelo usuário, exibindo os 10 streamers com maior score em cada grupo.

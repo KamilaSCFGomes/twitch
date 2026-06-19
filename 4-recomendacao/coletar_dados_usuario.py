@@ -3,7 +3,6 @@ import json
 import os
 import sys
 from pathlib import Path
-# Add the parent folder (one level up) to the system search path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import ler_informacoes as app
 
@@ -12,10 +11,7 @@ arquivo_canais_seguidos = os.path.join(os.getcwd(), "twitch", "4-recomendacao", 
 url = "https://api.twitch.tv/helix/channels/followed"
 headers = app.get_header_user_oauth()
 
-params = {
-    "user_id": app.get_user_id(),
-    "first": 10
-}
+params = {"user_id": app.get_user_id(), "first": 10}
 
 def pega_canais_seguidos():
     lista = []
@@ -36,12 +32,10 @@ def pega_canais_seguidos():
             }
             lista.append(streamer)
 
-        cursor = resposta['pagination']
-        try: params['after'] = cursor['cursor']
-        except: break
-
-        if not resposta['pagination']:
+        cursor = resposta.get('pagination', {}).get('cursor')
+        if not cursor:
             break
+        params['after'] = cursor
 
     return lista
 
