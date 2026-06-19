@@ -3,11 +3,16 @@ import os
 import sys
 import re
 from pathlib import Path
+import unicodedata
 
 PASTA_DADOS = os.path.join(os.getcwd(), "twitch", "4-recomendacao", "dados")
 arquivo_entrada = os.path.join(PASTA_DADOS, "perfis_seguidos.csv")
 arquivo_saida = os.path.join(PASTA_DADOS, "perfis_seguidos_processado.csv")
 
+def remover_acentos(texto):
+    nfkd = unicodedata.normalize('NFKD', texto)
+    sem_acentos = "".join([c for c in nfkd if not unicodedata.combining(c)])
+    return sem_acentos
 
 def remover_emojis(texto):
     emojis = [
@@ -56,8 +61,11 @@ def limpar_texto(texto):
         texto = texto.lower()
         texto = re.sub(r'@\S+', '', texto)
         texto = re.sub(r'!\S+', '', texto)
+        texto = remover_acentos(texto)
         texto = re.sub(r'[^a-z _]', '', texto)
         texto = re.sub(r'\S{20}\S*', '', texto)
+        texto = re.sub(r' \S ', '', texto)
+        texto = re.sub(r'^\S', '', texto)
         texto = texto.strip()
         texto = reduzir_repeticao(texto)
         return texto

@@ -4,6 +4,7 @@ import csv
 import os
 import sys
 import time
+import pandas as pd
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -12,6 +13,7 @@ import ler_informacoes as app
 PASTA_DADOS = os.path.join(os.getcwd(), "twitch", "4-recomendacao", "dados")
 arquivo_canais_seguidos = os.path.join(PASTA_DADOS, "canais_seguidos.json")
 arquivo_perfis = os.path.join(PASTA_DADOS, "perfis_seguidos.csv")
+arquivo_categorias = os.path.join(PASTA_DADOS, "categorias.csv")
 headers = app.get_header_user_oauth()
 
 def pega_vods(broadcaster_id, n=10):
@@ -53,6 +55,7 @@ def monta_perfil_streamer(broadcaster_id, broadcaster_name):
 
     idioma = info.get("broadcaster_language", "")
 
+    games = []
     textos = []
     for v in vods:
         partes = []
@@ -62,8 +65,8 @@ def monta_perfil_streamer(broadcaster_id, broadcaster_name):
             partes.extend(v["tags"])
         textos.append(" ".join(partes))
 
-    if info.get("game_name"):
-        textos.append(info["game_name"])
+    if info.get("game_id"):
+        games.append(info["game_id"])
     if info.get("tags"):
         textos.extend(info["tags"])
 
@@ -72,6 +75,7 @@ def monta_perfil_streamer(broadcaster_id, broadcaster_name):
         "broadcaster_id":   broadcaster_id,
         "broadcaster_name": broadcaster_name,
         "idioma":           idioma,
+        "games":            games,
         "perfil_texto":     " ".join(textos)
     }
 
@@ -93,6 +97,7 @@ with open(arquivo_canais_seguidos, "r", encoding="utf-8") as f:
 print(f"\n{len(canais_seguidos)} canais seguidos carregados.")
 print(f"{len(ja_coletados)} já coletados anteriormente.")
 
+games = []
 with open(arquivo_perfis, "a", newline="", encoding="utf-8") as f:
     writer = csv.writer(f, delimiter="\t")
 
@@ -105,6 +110,7 @@ with open(arquivo_perfis, "a", newline="", encoding="utf-8") as f:
         perfil = monta_perfil_streamer(canal["broadcaster_id"], canal["broadcaster_name"])
 
         if perfil:
+            games.append(perfil['games'])
             writer.writerow([
                 perfil["broadcaster_id"],
                 perfil["broadcaster_name"],
@@ -116,3 +122,13 @@ with open(arquivo_perfis, "a", newline="", encoding="utf-8") as f:
         time.sleep(0.2)
 
 print("\nColeta finalizada. Salvo em:", arquivo_perfis)
+print("\nCalculando a frequência das categorias...")
+
+df = pd.DataFrame(games, columns=['game_id'])
+counts = df.value_counts()
+percentages = df.value_counts(normalize=True) * 100
+
+df = pd.DataFrame({'count': counts, 'frequency': percentages})
+df.to_csv(arquivo_categorias, sep='\t')
+
+print("\nFinalizado. Salvo em:", arquivo_categorias)
